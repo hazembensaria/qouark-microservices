@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: gateway
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+  logging:
+    level:
+      org.springframework.security: DEBUG
+  cloud:
+    discovery:
+      enabled: true
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: authorization-server
+              uri:  http://auth-service:8080
+              predicates:
+                - Path=/authorization/**
+            - id: user-service
+              uri: http://user-service:8085
+              predicates:
+                - Path=/user/**
+            - id: ticket-service
+              uri: http://ticket-service:8086
+              predicates:
+                - Path=/ticket/**
+            - id: notification-service
+              uri: http://notification-service:8088
+              predicates:
+                - Path=/notification/**
+            - id: storage-service
+              uri: http://storage-service:8087
+              predicates:
+                - Path=/storage/**
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://${USER_NAME}:${PASSWORD}@${EUREKA_HOST}:5002/eureka/
+
+server:
+  port: ${SERVER_PORT}
+
+jwks:
+  uri: ${JWKS_URI}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway,mappings
+  endpoint:
+    gateway:
+      access: unrestricted
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
+    org.springframework.security: DEBUG

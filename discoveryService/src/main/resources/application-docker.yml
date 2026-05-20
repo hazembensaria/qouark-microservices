@@ -1,0 +1,8 @@
+UI_APP_URL: http://localhost:3000/login
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

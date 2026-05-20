@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: ticketservice
+  cloud:
+    discovery:
+      enabled: true
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DATABASE:localdb}
+    username: ${POSTGRES_USERNAME:user}
+    password: ${POSTGRES_PASSWORD:password}
+    hikari:
+      connection-test-query: SELECT 1
+  jpa:
+    database: POSTGRESQL
+    open-in-view: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default-schema: ${POSTGRES_DATABASE}
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://${USER_NAME}:${PASSWORD}@${EUREKA_HOST}:5002/eureka/
+
+
+ui:
+    app:
+      url: ${UI_APP_URL}
+
+
+jwks:
+    uri: ${JWKS_URI}
+
+server:
+  port: ${SERVER_PORT}

@@ -1,0 +1,253 @@
+services:
+  postgresdb:
+    container_name: postgrecontainer
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      SERVICE_TAGS: dev1
+      SERVICE_NAME: postgresservice
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-net
+    volumes:
+      - postgresvolume:/var/lib/postgresql
+#      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  pgadmin:
+    container_name: pgadmincontainer
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      PGADMIN_DEFAULT_ADDRESS: 6000
+      PGADMIN_LISTEN_PORT: 6000
+    depends_on:
+      - postgresdb
+    expose:
+      - 6000
+    ports:
+      - 7000:6000
+    networks:
+      - microservices-net
+    volumes:
+      - pgadminvolume:/var/lib/pgadmin
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    networks:
+      - microservices-net
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    networks:
+      - microservices-net
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+  discovery-service:
+    build:
+      context: ./discoveryService
+    container_name: discovery-service
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5002/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5002:5002"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 5002
+      POSTGRES_USERNAME: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST: postgresdb
+      POSTGRES_DATABASE: localdb
+      POSTGRES_PORT: 5432
+      USER_NAME: admin
+      PASSWORD: password
+    networks:
+      - microservices-net
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+  gateway-service:
+    build:
+      context: ./gateway
+    container_name: gateway-service
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8000
+    networks:
+      - microservices-net
+
+  auth-service:
+    build:
+      context: ./authorizationserver
+    container_name: auth-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_HOST: postgresdb
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: localdb
+      POSTGRES_USERNAME: user
+      POSTGRES_PASSWORD: password
+      EUREKA_HOST: discovery-service
+      USER_NAME: admin
+      PASSWORD: password
+      SERVER_PORT: 8080
+      UI_APP_URL: http://localhost:3000/login
+      PRIVATE_KEY: "private.key"
+      PUBLIC_KEY: "public.key"
+    networks:
+      - microservices-net
+  user-service:
+    build:
+      context: ./userservice
+    container_name: user-service
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_HOST: postgresdb
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: localdb
+      POSTGRES_USERNAME: user
+      POSTGRES_PASSWORD: password
+      EUREKA_HOST: discovery-service
+      USER_NAME: admin
+      PASSWORD: password
+      SERVER_PORT: 8085
+      KAFKA_SERVER_URL: kafka:9092
+      UI_APP_URL: http://localhost:3000/login
+      PRIVATE_KEY: "private.key"
+      PUBLIC_KEY: "public.key"
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    networks:
+      - microservices-net
+  ticket-service:
+    build:
+      context: ./ticketservice
+    container_name: ticket-service
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_HOST: postgresdb
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: localdb
+      POSTGRES_USERNAME: user
+      POSTGRES_PASSWORD: password
+      EUREKA_HOST: discovery-service
+      USER_NAME: admin
+      PASSWORD: password
+      SERVER_PORT: 8086
+      UI_APP_URL: http://localhost:3000/login
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    networks:
+      - microservices-net
+  notification-service:
+    build:
+      context: ./notificationservice
+    container_name: notification-service
+    ports:
+      - "8088:8088"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_HOST: postgresdb
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: localdb
+      POSTGRES_USERNAME: user
+      POSTGRES_PASSWORD: password
+      EUREKA_HOST: discovery-service
+      USER_NAME: admin
+      PASSWORD: password
+      MAIL_HOST: smtp.gmail.com
+      MAIL_PORT: 587
+      MAIL_ID: bensariahazem@gmail.com
+      MAIL_PASSWORD: sbynnbsuxszzgmup
+      VERIFY_EMAIL_HOST : http://localhost:3000
+      SERVER_PORT: 8088
+      UI_APP_URL: http://localhost:3000/login
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    networks:
+      - microservices-net
+  storage-service:
+    build:
+      context: ./storageService
+    container_name: storage-service
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_HOST: postgresdb
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: localdb
+      POSTGRES_USERNAME: user
+      POSTGRES_PASSWORD: password
+      EUREKA_HOST: discovery-service
+      USER_NAME: admin
+      PASSWORD: password
+      SERVER_PORT: 8087
+      UI_APP_URL: http://localhost:3000/login
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    driver: bridge
+
+volumes:
+  postgresvolume:
+  pgadminvolume:
+
+# docker compose -f ./compose-postgres.yml up -d
+# psql -h 192.168.1.216 -p 5432 -d <databasename> -U <user> -W
+# docker exec -it <container_name or id> psql -U <user> -d <database name> name

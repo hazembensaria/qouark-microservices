@@ -1,0 +1,42 @@
+
+
+#POSTGRES_USERNAME : user
+#POSTGRES_PASSWORD : password
+#POSTGRES_HOST: postgresdb
+#POSTGRES_DATABASE : localdb
+#POSTGRES_PORT: 5432
+#
+#USER_NAME : admin
+#PASSWORD: password
+#
+#SERVER_PORT: 8080
+#
+#
+#UI_APP_URL : http://localhost:3000/login
+#
+#EUREKA_HOST: discovery-service
+
+
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:postgresdb}:${POSTGRES_PORT:5432}/${POSTGRES_DATABASE:localdb}
+    username: ${POSTGRES_USERNAME:user}
+    password: ${POSTGRES_PASSWORD:password}
+
+eureka:
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://${USER_NAME}:${PASSWORD}@discovery-service:5002/eureka/
+
+ui:
+  app:
+    url: ${UI_APP_URL:http://localhost:3000/login}
+
+
+keys:
+  private: ${PRIVATE_KEY}
+  public: ${PUBLIC_KEY}

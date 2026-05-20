@@ -1,0 +1,47 @@
+
+
+JWKS:
+  URI: http://auth-service:8080/oauth2/jwks
+
+KAFKA:
+  SERVER:
+    URL: kafka:9092
+
+
+
+
+#POSTGRES_USERNAME : user
+#POSTGRES_PASSWORD : password
+#POSTGRES_HOST: postgresdb
+#POSTGRES_DATABASE : localdb
+#POSTGRES_PORT: 5432
+#
+#USER_NAME : admin
+#PASSWORD: password
+#
+#SERVER_PORT: 8080
+#
+#
+#UI_APP_URL : http://localhost:3000/login
+#
+#EUREKA_HOST: discovery-service
+
+
+server:
+  port: ${SERVER_PORT:8085}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:postgresdb}:${POSTGRES_PORT:5432}/${POSTGRES_DATABASE:localdb}
+    username: ${POSTGRES_USERNAME:user}
+    password: ${POSTGRES_PASSWORD:password}
+
+
+ui:
+  app:
+    url: ${UI_APP_URL:http://localhost:3000/login}
+
+
+keys:
+  private: ${PRIVATE_KEY}
+  public: ${PUBLIC_KEY}

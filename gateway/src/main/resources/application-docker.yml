@@ -1,0 +1,7 @@
+
+
+JWKS:
+  URI: http://auth-service:8080/oauth2/jwks
+
+
+

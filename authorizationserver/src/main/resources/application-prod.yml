@@ -1,0 +1,16 @@
+SPRING_PROFILES_ACTIVE: prod
+
+PRIVATE_KEY: "private.key"
+PUBLIC_KEY: "public.key"
+
+POSTGERS_USERNAME: user
+POSTGERS_PASSWORD: password
+POSTGRES_HOST: localhost
+POSTGRES_DATABASE: localdb
+POSTGRES_PORT: 5432
+
+USER_NAME: admin
+PASSWORD: password
+
+SERVER_PORT: 8080
+UI_APP_URL: http://localhost:3000/login

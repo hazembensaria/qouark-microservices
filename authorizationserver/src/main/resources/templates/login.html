@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="bg-slate-50">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Cat Support | Please sign in</title>
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/9732/9732800.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+
+<!-- Navbar -->
+<nav class="bg-white/70 backdrop-blur-md fixed w-full top-0 left-0 z-40 border-b border-gray-200">
+    <div class="container h-16 mx-auto px-4">
+        <div class="relative h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <a href="http://localhost:3000" class="flex items-center gap-2">
+                    <span class="font-semibold text-gray-800">Qouark</span>
+                </a>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="http://localhost:8080/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=http://localhost:3000&code_challenge_method=S256&code_challenge=PWlAu3anniGd9FmIdI0nSnIW7y0Mburm2Az_NsIginA"
+                   class="bg-gray-900 text-white hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center">
+                    Login
+                    <svg xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round" stroke-linecap="round" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="ml-2 size-4"><path d="m15 4.5 7.5 7.5-7.5 7.5" /></svg>
+                </a>
+                <a href="http://localhost:3000/register" class="bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center">
+                    Register
+                </a>
+                <a href="http://localhost:3000/resetpassword" class="text-gray-500 hover:text-gray-800 text-sm">
+                    Reset Password
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Content -->
+<div class="pt-24 pb-16">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col items-center">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-16 h-16 rounded-2xl bg-gray-900 flex items-center justify-center shadow-md">
+                    <img class="w-10 h-10" src="https://cdn-icons-png.flaticon.com/512/9732/9732800.png" alt="Logo">
+                </div>
+                <h2 class="mt-5 text-2xl font-bold text-gray-900">Sign into your account</h2>
+                <p class="text-sm text-gray-500 mt-1">Welcome back! Please enter your details.</p>
+            </div>
+
+            <div class="mt-8 w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                <div th:if="${session.SPRING_SECURITY_LAST_EXCEPTION != null}" class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50" id="alert" role="alert">
+                    <svg class="flex-shrink-0 w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <div class="w-96 text-sm font-medium"> data-th-text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}" An error occured. Please try again.</div>
+                    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#alert" aria-label="Close">
+                        <span class="sr-only">Close</span>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <form method="post" th:action="@{/login}" class="space-y-5">
+                    <div>
+                        <label for="username" class="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" name="username" id="username"
+                               class="border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                               placeholder="name@email.com" required />
+                    </div>
+                    <div>
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" name="password" id="password"
+                               placeholder="••••••••"
+                               class="border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                               required />
+                    </div>
+                    <button type="submit" class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-sm px-5 py-3 text-center">Sign into your account</button>
+                </form>
+
+                <div class="mt-6 text-sm text-center text-gray-500">
+                    <a href="http://localhost:3000/resetpassword" class="block text-blue-600 hover:underline mb-3">Forgot Password?</a>
+                    <div class="flex items-center justify-between">
+                        <a href="http://localhost:3000/register" class="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm">Create account</a>
+                        <a href="http://localhost:3000" class="inline-flex items-center text-blue-600 hover:underline">
+                            Back to home
+                            <svg xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke="currentColor" class="ml-1 size-4">
+                                <path d="m15 4.5 7.5 7.5-7.5 7.5" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+SPRING_PROFILES_ACTIVE: test
+
+
+
+POSTGERS_USERNAME: user
+POSTGERS_PASSWORD: password
+POSTGRES_HOST: localhost
+POSTGRES_DATABASE: localdb
+POSTGRES_PORT: 5432
+
+USER_NAME: admin
+PASSWORD: password
+
+SERVER_PORT: 8087
+
+JWKS_URI : http://localhost:8080/oauth2/jwks
+
+
+UI_APP_URL: http://localhost:3000/login

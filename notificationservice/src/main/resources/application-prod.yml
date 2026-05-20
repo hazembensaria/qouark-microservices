@@ -1,0 +1,26 @@
+SPRING_PROFILES_ACTIVE: prod
+
+
+
+POSTGERS_USERNAME: user
+POSTGERS_PASSWORD: password
+POSTGRES_HOST: localhost
+POSTGRES_DATABASE: localdb
+POSTGRES_PORT: 5432
+
+USER_NAME: admin
+PASSWORD: password
+
+SERVER_PORT: 8088
+
+MAIL_HOST: smtp.gmail.com
+MAIL_PORT: 587
+MAIL_ID: bensariahazem@gmail.com
+MAIL_PASSWORD: sbynnbsuxszzgmup
+
+JWKS_URI : http://localhost:8080/oauth2/jwks
+
+UI_APP_URL: http://localhost:3000/login
+
+KAFKA_SERVER_URL: localhost:9092
+EUREKA_HOST: localhost

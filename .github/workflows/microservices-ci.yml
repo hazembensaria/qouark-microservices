@@ -1,0 +1,98 @@
+name: Microservices CI/CD
+
+on:
+  push:
+    branches: [main, dev]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      auth: ${{ steps.filter.outputs.auth }}
+      user: ${{ steps.filter.outputs.user }}
+      gateway: ${{ steps.filter.outputs.gateway }}
+      discovery: ${{ steps.filter.outputs.discovery }}
+      ticket: ${{ steps.filter.outputs.ticket }}
+      notification: ${{ steps.filter.outputs.notification }}
+      storage: ${{ steps.filter.outputs.storage }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            auth:
+              - 'authorizationserver/**'
+            user:
+              - 'userservice/**'
+            gateway:
+              - 'gateway/**'
+            discovery:
+              - 'discoveryService/**'
+            ticket:
+              - 'ticketservice/**'
+            notification:
+              - 'notificationservice/**'
+            storage:
+              - 'storageService/**'
+
+  build-and-push:
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - auth
+          - user
+          - gateway
+          - discovery
+          - ticket
+          - notification
+          - storage
+
+    if: |
+      (matrix.service == 'auth' && needs.detect-changes.outputs.auth == 'true') ||
+      (matrix.service == 'user' && needs.detect-changes.outputs.user == 'true') ||
+      (matrix.service == 'gateway' && needs.detect-changes.outputs.gateway == 'true') ||
+      (matrix.service == 'discovery' && needs.detect-changes.outputs.discovery == 'true') ||
+      (matrix.service == 'ticket' && needs.detect-changes.outputs.ticket == 'true') ||
+      (matrix.service == 'notification' && needs.detect-changes.outputs.notification == 'true') ||
+      (matrix.service == 'storage' && needs.detect-changes.outputs.storage == 'true')
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          SERVICE=${{ matrix.service }}
+
+          if [ "$SERVICE" = "auth" ]; then DIR="authorizationserver"; fi
+          if [ "$SERVICE" = "user" ]; then DIR="userservice"; fi
+          if [ "$SERVICE" = "gateway" ]; then DIR="gateway"; fi
+          if [ "$SERVICE" = "discovery" ]; then DIR="discoveryService"; fi
+          if [ "$SERVICE" = "ticket" ]; then DIR="ticketservice"; fi
+          if [ "$SERVICE" = "notification" ]; then DIR="notificationservice"; fi
+          if [ "$SERVICE" = "storage" ]; then DIR="storageService"; fi
+
+          IMAGE=ghcr.io/${{ github.repository_owner }}/$SERVICE:${{ github.sha }}
+
+          docker build -t $IMAGE $DIR
+          docker push $IMAGE
+
+      - name: Tag latest
+        run: |
+          SERVICE=${{ matrix.service }}
+          IMAGE=ghcr.io/${{ github.repository_owner }}/$SERVICE
+
+          docker tag $IMAGE:${{ github.sha }} $IMAGE:latest || true
+          docker push $IMAGE:latest || true

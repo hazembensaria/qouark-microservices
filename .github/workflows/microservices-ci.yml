@@ -1,98 +1,210 @@
-name: Microservices CI/CD
+name: CI - Build, Test, Image & Smoke (Microservices)
 
 on:
   push:
-    branches: [main, dev]
+    branches:
+      - dev
+      - main
+  pull_request:
+    branches:
+      - dev
 
 permissions:
   contents: read
   packages: write
 
+# ---------------- BUILD ----------------
 jobs:
-  detect-changes:
+  build:
+    name: Build JARs
     runs-on: ubuntu-latest
-    outputs:
-      auth: ${{ steps.filter.outputs.auth }}
-      user: ${{ steps.filter.outputs.user }}
-      gateway: ${{ steps.filter.outputs.gateway }}
-      discovery: ${{ steps.filter.outputs.discovery }}
-      ticket: ${{ steps.filter.outputs.ticket }}
-      notification: ${{ steps.filter.outputs.notification }}
-      storage: ${{ steps.filter.outputs.storage }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Detect changes
-        uses: dorny/paths-filter@v3
-        id: filter
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
         with:
-          filters: |
-            auth:
-              - 'authorizationserver/**'
-            user:
-              - 'userservice/**'
-            gateway:
-              - 'gateway/**'
-            discovery:
-              - 'discoveryService/**'
-            ticket:
-              - 'ticketservice/**'
-            notification:
-              - 'notificationservice/**'
-            storage:
-              - 'storageService/**'
+          distribution: temurin
+          java-version: 21
 
-  build-and-push:
-    needs: detect-changes
+      - name: Build all services
+        run: |
+          set -e
+      
+          echo "Building auth-service"
+          cd authorizationserver
+          chmod +x mvnw || true
+          ./mvnw clean package -DskipTests
+          cd ..
+      
+          echo "Building user-service"
+          cd userservice
+          chmod +x mvnw || true
+          ./mvnw clean package -DskipTests
+          cd ..
+      
+          echo "Building gateway"
+          cd gateway
+          chmod +x mvnw || true
+          ./mvnw clean package -DskipTests
+          cd ..
+      
+          echo "Building discovery-service"
+          cd discoveryService
+          chmod +x mvnw || true
+          ./mvnw clean package -DskipTests
+          cd ..
+
+          echo "Building notification-service"
+          cd notificationservice
+          chmod +x mvnw || true
+          ./mvnw clean package -DskipTests
+          cd ..
+          
+          echo "Building ticket-service"
+          cd ticketservice
+          chmod +x mvnw || true
+          ./mvnw clean package -DskipTests
+          cd ..
+
+          echo "Building storage-service"
+          cd storageService
+          chmod +x mvnw || true
+          ./mvnw clean package -DskipTests
+          cd ..
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: microservices-jars
+          path: |
+            authorizationserver/target/*.jar
+            userservice/target/*.jar
+            gateway/target/*.jar
+            discoveryService/target/*.jar
+            ticketservice/target/*.jar
+            notificationservice/target/*.jar
+            storageService/target/*.jar
+
+
+# ---------------- TEST ----------------
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service:
-          - auth
-          - user
-          - gateway
-          - discovery
-          - ticket
-          - notification
-          - storage
-
-    if: |
-      (matrix.service == 'auth' && needs.detect-changes.outputs.auth == 'true') ||
-      (matrix.service == 'user' && needs.detect-changes.outputs.user == 'true') ||
-      (matrix.service == 'gateway' && needs.detect-changes.outputs.gateway == 'true') ||
-      (matrix.service == 'discovery' && needs.detect-changes.outputs.discovery == 'true') ||
-      (matrix.service == 'ticket' && needs.detect-changes.outputs.ticket == 'true') ||
-      (matrix.service == 'notification' && needs.detect-changes.outputs.notification == 'true') ||
-      (matrix.service == 'storage' && needs.detect-changes.outputs.storage == 'true')
+    needs: build
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Run tests
+        run: |
+          ./mvnw test
+
+
+# ---------------- IMAGE BUILD ----------------
+  publish-image:
+    name: Build and push Docker images
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build Docker image
+      # AUTH
+      - name: Build auth-service
         run: |
-          SERVICE=${{ matrix.service }}
+          docker build -t ghcr.io/${{ github.repository_owner }}/auth-service:${{ github.sha }} ./authorizationserver
+          docker push ghcr.io/${{ github.repository_owner }}/auth-service:${{ github.sha }}
 
-          if [ "$SERVICE" = "auth" ]; then DIR="authorizationserver"; fi
-          if [ "$SERVICE" = "user" ]; then DIR="userservice"; fi
-          if [ "$SERVICE" = "gateway" ]; then DIR="gateway"; fi
-          if [ "$SERVICE" = "discovery" ]; then DIR="discoveryService"; fi
-          if [ "$SERVICE" = "ticket" ]; then DIR="ticketservice"; fi
-          if [ "$SERVICE" = "notification" ]; then DIR="notificationservice"; fi
-          if [ "$SERVICE" = "storage" ]; then DIR="storageService"; fi
-
-          IMAGE=ghcr.io/${{ github.repository_owner }}/$SERVICE:${{ github.sha }}
-
-          docker build -t $IMAGE $DIR
-          docker push $IMAGE
-
-      - name: Tag latest
+      # USER
+      - name: Build user-service
         run: |
-          SERVICE=${{ matrix.service }}
-          IMAGE=ghcr.io/${{ github.repository_owner }}/$SERVICE
+          docker build -t ghcr.io/${{ github.repository_owner }}/user-service:${{ github.sha }} ./userservice
+          docker push ghcr.io/${{ github.repository_owner }}/user-service:${{ github.sha }}
 
-          docker tag $IMAGE:${{ github.sha }} $IMAGE:latest || true
-          docker push $IMAGE:latest || true
+      # GATEWAY
+      - name: Build gateway-service
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/gateway-service:${{ github.sha }} ./gateway
+          docker push ghcr.io/${{ github.repository_owner }}/gateway-service:${{ github.sha }}
+
+      # DISCOVERY
+      - name: Build discovery-service
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/discovery-service:${{ github.sha }} ./discoveryService
+          docker push ghcr.io/${{ github.repository_owner }}/discovery-service:${{ github.sha }}
+
+
+# ---------------- SMOKE TEST ----------------
+  smoke-test:
+    name: Smoke Test
+    runs-on: ubuntu-latest
+    needs: publish-image
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Pull and run discovery-service only
+        run: |
+          IMAGE=ghcr.io/${{ github.repository_owner }}/discovery-service:${{ github.sha }}
+
+          docker run -d -p 5002:5002 --name discovery $IMAGE
+
+          for i in {1..30}; do
+            if curl -sSf http://localhost:5002/actuator/health; then
+              echo "✅ Discovery is healthy"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "❌ Failed"
+          docker logs discovery
+          exit 1
+
+
+# ---------------- DEPLOY ----------------
+  deploy:
+    name: Deploy to Azure
+    runs-on: ubuntu-latest
+    needs: smoke-test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: libraryregistery.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Push images to ACR
+        run: |
+          for service in auth-service user-service gateway-service discovery-service; do
+            docker pull ghcr.io/${{ github.repository_owner }}/$service:${{ github.sha }}
+
+            docker tag ghcr.io/${{ github.repository_owner }}/$service:${{ github.sha }} \
+              libraryregistery.azurecr.io/$service:${{ github.sha }}
+
+            docker push libraryregistery.azurecr.io/$service:${{ github.sha }}
+          done

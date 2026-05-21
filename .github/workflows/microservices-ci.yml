@@ -138,24 +138,24 @@ jobs:
 
 
 # ---------------- DEPLOY ----------------
-deploy:
-  name: Deploy to Azure Container Apps
-  runs-on: ubuntu-latest
-  needs: publish-image
-  if: github.ref == 'refs/heads/main'
+  deploy:
+    name: Deploy to Azure Container Apps
+    runs-on: ubuntu-latest
+    needs: publish-image
+    if: github.ref == 'refs/heads/main'
 
-  steps:
-    - name: Azure Login
-      uses: azure/login@v2
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Deploy auth-service
-      run: |
-        az containerapp update \
-          --name auth-service \
-          --resource-group YOUR_RG \
-          --image qouark.azurecr.io/auth-service:${{ github.sha }}
+      - name: Deploy auth-service
+        run: |
+          az containerapp update \
+            --name auth-service \
+            --resource-group YOUR_RG \
+            --image qouark.azurecr.io/auth-service:${{ github.sha }}
 
 #    - name: Deploy user-service
 #      run: |

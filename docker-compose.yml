@@ -118,6 +118,8 @@ services:
   auth-service:
     build:
       context: ./authorizationserver
+    volumes:
+      - ./authorizationserver/src/main/resources/keys:/app/src/main/resources/keys
     container_name: auth-service
     ports:
       - "8080:8080"

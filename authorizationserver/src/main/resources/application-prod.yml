@@ -1,16 +1,28 @@
-SPRING_PROFILES_ACTIVE: prod
+server:
+  port: ${SERVER_PORT:8080}
 
-PRIVATE_KEY: "private.key"
-PUBLIC_KEY: "public.key"
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
 
-POSTGERS_USERNAME: user
-POSTGERS_PASSWORD: password
-POSTGRES_HOST: localhost
-POSTGRES_DATABASE: localdb
-POSTGRES_PORT: 5432
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
-USER_NAME: admin
-PASSWORD: password
+eureka:
+  client:
+    enabled: false
 
-SERVER_PORT: 8080
-UI_APP_URL: http://localhost:3000/login
+ui:
+  app:
+    url: ${UI_APP_URL:http://localhost:3000/login}
+
+keys:
+  private: ${PRIVATE_KEY}
+  public: ${PUBLIC_KEY}

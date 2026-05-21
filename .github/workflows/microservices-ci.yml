@@ -138,32 +138,42 @@ jobs:
 
 
 # ---------------- DEPLOY ----------------
-  deploy:
-    name: Deploy to Azure
-    runs-on: ubuntu-latest
-    needs: smoke-test
-    if: github.ref == 'refs/heads/main'
+deploy:
+  name: Deploy to Azure Container Apps
+  runs-on: ubuntu-latest
+  needs: publish-image
+  if: github.ref == 'refs/heads/main'
 
-    steps:
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  steps:
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Login to ACR
-        uses: docker/login-action@v3
-        with:
-          registry: libraryregistery.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+    - name: Deploy auth-service
+      run: |
+        az containerapp update \
+          --name auth-service \
+          --resource-group YOUR_RG \
+          --image qouark.azurecr.io/auth-service:${{ github.sha }}
 
-      - name: Push images to ACR
-        run: |
-          for service in auth-service user-service gateway-service discovery-service; do
-            docker pull ghcr.io/${{ github.repository_owner }}/$service:${{ github.sha }}
-
-            docker tag ghcr.io/${{ github.repository_owner }}/$service:${{ github.sha }} \
-              libraryregistery.azurecr.io/$service:${{ github.sha }}
-
-            docker push libraryregistery.azurecr.io/$service:${{ github.sha }}
-          done
+#    - name: Deploy user-service
+#      run: |
+#        az containerapp update \
+#          --name user-service \
+#          --resource-group YOUR_RG \
+#          --image qouark.azurecr.io/user-service:${{ github.sha }}
+#
+#    - name: Deploy gateway
+#      run: |
+#        az containerapp update \
+#          --name gateway-service \
+#          --resource-group YOUR_RG \
+#          --image qouark.azurecr.io/gateway-service:${{ github.sha }}
+#
+#    - name: Deploy discovery
+#      run: |
+#        az containerapp update \
+#          --name discovery-service \
+#          --resource-group YOUR_RG \
+#          --image qouark.azurecr.io/discovery-service:${{ github.sha }}

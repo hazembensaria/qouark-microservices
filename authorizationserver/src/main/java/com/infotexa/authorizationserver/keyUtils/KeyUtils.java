@@ -26,14 +26,14 @@ import java.util.UUID;
 public class KeyUtils {
     private static final String RSA = "RSA";
 
-    @Value("${spring.profiles.active}")
-    private String activeProfile ;
+        @Value("${spring.profiles.active}")
+        private String activeProfile ;
 
-    @Value("${keys.private}")
-    private String privateKey ;
+        @Value("${keys.private}")
+        private String privateKey ;
 
-    @Value("${keys.public}")
-    private String publicKey ;
+        @Value("${keys.public}")
+        private String publicKey ;
 
     public RSAKey getRsaKey() {
         return generateRSAKeyPair(privateKey, publicKey);
@@ -43,7 +43,7 @@ public class KeyUtils {
         KeyPair keyPair;
         var keysDirectory = Paths.get("src", "main", "resources", "keys");
         verifyKeysDirectory(keysDirectory);
-        if (!activeProfile.equalsIgnoreCase("prod") && Files.exists(keysDirectory.resolve(privateKeyName)) && Files.exists(keysDirectory.resolve(publicKeyName))) {
+        if ( Files.exists(keysDirectory.resolve(privateKeyName)) && Files.exists(keysDirectory.resolve(publicKeyName))) {
             log.info("Keys already exist. Loading from files.");
             var privateKeyFile = keysDirectory.resolve(privateKeyName).toFile();
             var publicKeyFile = keysDirectory.resolve(publicKeyName).toFile();
@@ -65,11 +65,9 @@ public class KeyUtils {
                 throw new ApiException("Failed to load keys: " + e.getMessage());
             }
         }else {
-            if(activeProfile.equalsIgnoreCase("prod")){
-                throw new ApiException("Keys not found in production environment.");
-            }
+            log.info("Generating new RSA key pair.");
+
         }
-        log.info("Generating new RSA key pair.");
 
        try {
            var keyPairGenerator = KeyPairGenerator.getInstance(RSA);

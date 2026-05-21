@@ -15,6 +15,7 @@ permissions:
 
 
 # ---------------- TEST ----------------
+jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest

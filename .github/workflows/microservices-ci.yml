@@ -61,52 +61,53 @@ jobs:
 
 # ---------------- IMAGE BUILD ----------------
   publish-image:
-    name: Build and push Docker images
+    name: Build & Push to ACR (Matrix)
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main'
+
+    strategy:
+      matrix:
+        include:
+          - service: auth-service
+            path: authorizationserver
+
+          - service: user-service
+            path: userservice
+
+          - service: gateway-service
+            path: gateway
+
+          - service: discovery-service
+            path: discoveryService
+
+          - service: ticket-service
+            path: ticketservice
+
+          - service: notification-service
+            path: notificationservice
+
+          - service: storage-service
+            path: storageService
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Login to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Login to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: qouark.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Build & push auth-service
+      - name: Build & Push ${{ matrix.service }}
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/auth-service:${{ github.sha }} ./authorizationserver
-          docker push ghcr.io/${{ github.repository_owner }}/auth-service:${{ github.sha }}
+          docker build \
+            -t qouark.azurecr.io/${{ matrix.service }}:${{ github.sha }} \
+            ./${{ matrix.path }}
 
-      - name: Build & push user-service
-        run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/user-service:${{ github.sha }} ./userservice
-          docker push ghcr.io/${{ github.repository_owner }}/user-service:${{ github.sha }}
-
-      - name: Build & push ticket-service
-        run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/user-service:${{ github.sha }} ./ticketservice
-          docker push ghcr.io/${{ github.repository_owner }}/user-service:${{ github.sha }}
-
-      - name: Build & push storage-service
-        run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/user-service:${{ github.sha }} ./storageService
-          docker push ghcr.io/${{ github.repository_owner }}/user-service:${{ github.sha }}
-
-      - name: Build & push notification-service
-        run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/user-service:${{ github.sha }} ./notificationservice
-          docker push ghcr.io/${{ github.repository_owner }}/user-service:${{ github.sha }}
-
-      - name: Build & push gateway
-        run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/gateway-service:${{ github.sha }} ./gateway
-          docker push ghcr.io/${{ github.repository_owner }}/gateway-service:${{ github.sha }}
-
-      - name: Build & push discovery-service
-        run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/discovery-service:${{ github.sha }} ./discoveryService
-          docker push ghcr.io/${{ github.repository_owner }}/discovery-service:${{ github.sha }}
+          docker push qouark.azurecr.io/${{ matrix.service }}:${{ github.sha }}
 # ---------------- SMOKE TEST ----------------
   smoke-test:
     name: Smoke Test

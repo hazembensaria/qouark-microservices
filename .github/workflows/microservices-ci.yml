@@ -154,7 +154,7 @@ jobs:
         run: |
           az containerapp update \
             --name auth-service \
-            --resource-group YOUR_RG \
+            --resource-group rg-qouark-microservices \
             --image qouark.azurecr.io/auth-service:${{ github.sha }}
 
 #    - name: Deploy user-service

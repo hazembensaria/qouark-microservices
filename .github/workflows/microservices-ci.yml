@@ -170,3 +170,11 @@ jobs:
             --name ticket-service \
             --resource-group rg-qouark-microservices \
             --image qouark.azurecr.io/ticket-service:${{ github.sha }}
+          
+
+      - name: Deploy storage-service
+        run: |
+          az containerapp update \
+            --name storage-service \
+            --resource-group rg-qouark-microservices \
+            --image qouark.azurecr.io/storage-service:${{ github.sha }}

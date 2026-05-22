@@ -30,7 +30,6 @@ spring:
     properties:
       security.protocol: SASL_SSL
       sasl.mechanism: PLAIN
-      sasl.jaas.config: ${KAFKA_JAAS_CONFIG}
     template:
       default-topic: NOTIFICATION_TOPIC
     consumer:

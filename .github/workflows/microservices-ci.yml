@@ -178,3 +178,17 @@ jobs:
             --name storage-service \
             --resource-group rg-qouark-microservices \
             --image qouark.azurecr.io/storage-service:${{ github.sha }}
+
+      - name: Deploy gateway-service
+        run: |
+          az containerapp update \
+            --name gateway-service \
+            --resource-group rg-qouark-microservices \
+            --image qouark.azurecr.io/gateway-service:${{ github.sha }} 
+
+      - name: Deploy notification-service
+        run: |
+          az containerapp update \
+            --name notification-service \
+            --resource-group rg-qouark-microservices \
+            --image qouark.azurecr.io/notification-service:${{ github.sha }}

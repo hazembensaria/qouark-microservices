@@ -35,4 +35,4 @@ UI_APP_URL: http://localhost:3000/login
 
 KAFKA:
   SERVER:
-    BOOTSTRAP_SERVERS: qouarknotificationhub.servicebus.windows.net:9093
+    URL: qouarknotificationhub.servicebus.windows.net:9093

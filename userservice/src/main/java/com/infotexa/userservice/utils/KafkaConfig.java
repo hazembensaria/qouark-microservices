@@ -22,7 +22,7 @@ public class KafkaConfig {
 
     @Bean
     public ProducerFactory<String, Notification> producerFactory(
-            @Value("${KAFKA_SERVER_URL:kafka:9092}") String bootstrap) {
+            @Value("${KAFKA_SERVER_URL:qouarknotificationhub.servicebus.windows.net:9093}") String bootstrap) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);

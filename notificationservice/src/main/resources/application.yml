@@ -35,6 +35,9 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
+        security.protocol: SASL_SSL
+        sasl.mechanism: PLAIN
+        sasl.jaas.config: ${KAFKA_JAAS_CONFIG}
         spring:
           json:
             type:

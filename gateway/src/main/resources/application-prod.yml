@@ -3,5 +3,5 @@
 SERVER:
   PORT: 8000
 
-JWKS:
-  URI: https://auth-service.happyforest-b11122d9.francecentral.azurecontainerapps.io/oauth2/jwks
+jwks:
+  uri: https://auth-service.happyforest-b11122d9.francecentral.azurecontainerapps.io/oauth2/jwks

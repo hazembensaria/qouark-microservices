@@ -3,7 +3,7 @@ SERVER:
   PORT: 8086
 
 JWKS:
-  URI : https://auth-service.happyforest-b11122d9.francecentral.azurecontainerapps.io:8080/oauth2/jwks
+  URI : https://auth-service.happyforest-b11122d9.francecentral.azurecontainerapps.io/oauth2/jwks
 
 UI:
   APP:

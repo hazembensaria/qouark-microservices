@@ -38,7 +38,7 @@ MAIL:
 #MAIL_PASSWORD: sbynnbsuxszzgmup
 
 JWKS:
-  URI : http://auth-service.happyforest-b11122d9.francecentral.azurecontainerapps.io/oauth2/jwks
+  URI : https://auth-service.happyforest-b11122d9.francecentral.azurecontainerapps.io/oauth2/jwks
 
 UI_APP_URL: http://localhost:3000/login
 

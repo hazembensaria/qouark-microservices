@@ -60,7 +60,7 @@ public class KeyUtils {
             log.info("RSA keys loaded successfully from classpath");
             return new RSAKey.Builder(publicKey)
                     .privateKey(privateKey)
-                    .keyID(UUID.randomUUID().toString())
+                    .keyID("qouark-key-1")
                     .build();
 
         } catch (Exception e) {

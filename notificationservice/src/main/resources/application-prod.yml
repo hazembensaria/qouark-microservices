@@ -1,26 +1,38 @@
-SPRING_PROFILES_ACTIVE: prod
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default-schema: public
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 
+SERVER:
+  PORT: 8088
 
-POSTGERS_USERNAME: user
-POSTGERS_PASSWORD: password
-POSTGRES_HOST: localhost
-POSTGRES_DATABASE: localdb
-POSTGRES_PORT: 5432
+MAIL:
+  HOST: ${MAIL_HOST:smtp.gmail.com}
+  PORT: ${MAIL_PORT:587}
+  ID : ${MAIL_ID:bensariahazem@gmail.com}
+  PASSWORD: ${MAIL_PASSWORD:sbynnbsuxszzgmup}
 
-USER_NAME: admin
-PASSWORD: password
 
-SERVER_PORT: 8088
+#MAIL_HOST: smtp.gmail.com
+#MAIL_PORT: 587
+#MAIL_ID: bensariahazem@gmail.com
+#MAIL_PASSWORD: sbynnbsuxszzgmup
 
-MAIL_HOST: smtp.gmail.com
-MAIL_PORT: 587
-MAIL_ID: bensariahazem@gmail.com
-MAIL_PASSWORD: sbynnbsuxszzgmup
-
-JWKS_URI : http://localhost:8080/oauth2/jwks
+JWKS:
+  URI : http://localhost:8080/oauth2/jwks
 
 UI_APP_URL: http://localhost:3000/login
 
-KAFKA_SERVER_URL: localhost:9092
-EUREKA_HOST: localhost
+KAFKA:
+  SERVER:
+    BOOTSTRAP_SERVERS: qouarknotificationhub.servicebus.windows.net:9093

@@ -1,8 +1,7 @@
-SPRING_PROFILES_ACTIVE: prod
 
-USER_NAME: admin
-PASSWORD: password
-ROLES: EUREKA_CLIENT
 
-SERVER_PORT: 8000
-JWKS_URI: http://localhost:8080/oauth2/jwks
+SERVER:
+  PORT: 8000
+
+JWKS:
+  URI: http://localhost:8080/oauth2/jwks

@@ -1,18 +1,23 @@
-SPRING_PROFILES_ACTIVE: prod
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default-schema: public
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
+SERVER:
+  PORT: 8087
 
-POSTGERS_USERNAME: user
-POSTGERS_PASSWORD: password
-POSTGRES_HOST: localhost
-POSTGRES_DATABASE: localdb
-POSTGRES_PORT: 5432
+JWKS:
+  URI : http://localhost:8080/oauth2/jwks
 
-USER_NAME: admin
-PASSWORD: password
-
-SERVER_PORT: 8087
-
-JWKS_URI : http://localhost:8080/oauth2/jwks
-
-UI_APP_URL: http://localhost:3000/login
+UI:
+  APP:
+    URL: http://localhost:3000/login

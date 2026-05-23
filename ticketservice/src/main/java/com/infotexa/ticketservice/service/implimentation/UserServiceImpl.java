@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl() {
         this.restClient = RestClient.builder()
                 .requestFactory(new HttpComponentsClientHttpRequestFactory())
-                .baseUrl("http://user-service:8085")
+                .baseUrl("https://user-service.happyforest-b11122d9.francecentral.azurecontainerapps.io")
                 .requestInterceptor(new RestClientInterceptor())
 //                .requestInitializer(null)
                 .build();

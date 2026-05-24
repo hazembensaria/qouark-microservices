@@ -4,14 +4,7 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
   kafka:
-    bootstrap-servers: ${KAFKA_SERVER_URL:qouarknotificationhub.servicebus.windows.net:9093 }
-    properties:
-      security.protocol: SASL_SSL
-      sasl.mechanism: PLAIN
-      sasl.jaas.config: >
-        org.apache.kafka.common.security.plain.PlainLoginModule required
-        username="$ConnectionString"
-        password="${EVENT_HUB_CONNECTION_STRING}";
+    bootstrap-servers: ${KAFKA_SERVER_URL:20.19.82.88:9092 }
 
   jpa:
     hibernate:
@@ -44,4 +37,4 @@ UI_APP_URL: http://localhost:3000/login
 
 KAFKA:
   SERVER:
-    URL: qouarknotificationhub.servicebus.windows.net:9093
+    URL: 20.19.82.88:9092

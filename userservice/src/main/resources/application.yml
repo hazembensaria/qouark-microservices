@@ -26,7 +26,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   kafka:
-    bootstrap-servers: ${KAFKA_SERVER_URL:kafka:9092}
+    bootstrap-servers: ${KAFKA_SERVER_URL:20.19.82.88:9092}
     template:
       default-topic: NOTIFICATION_TOPIC
     producer:

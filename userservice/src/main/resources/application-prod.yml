@@ -32,4 +32,4 @@ UI:
 
 KAFKA:
   SERVER:
-    URL: qouarknotificationhub.servicebus.windows.net:9093  # ← same URL here too!
+    URL: 20.19.82.88:9092  # ← same URL here too!

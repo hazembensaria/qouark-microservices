@@ -26,14 +26,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   kafka:
-    bootstrap-servers: ${KAFKA_SERVER_URL:qouarknotificationhub.servicebus.windows.net:9093}
-    properties:
-      security.protocol: SASL_SSL
-      sasl.mechanism: PLAIN
-      sasl.jaas.config: >
-        org.apache.kafka.common.security.plain.PlainLoginModule required
-        username="$ConnectionString"
-        password="${EVENT_HUB_CONNECTION_STRING}";
+    bootstrap-servers: ${KAFKA_SERVER_URL:20.19.82.88:9092}
     template:
       default-topic: NOTIFICATION_TOPIC
     consumer:

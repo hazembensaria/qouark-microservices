@@ -402,6 +402,23 @@ public class TicketRepositoryImpl implements TicketRepository {
         }
     }
 
+    @Override
+    public List<Ticket> getAllUserTickets(String userUuid, int page, int size, String status, String type, String filter) {
+        try {
+            var query = createSelectUserAllTicketsQuery(status , type , filter);
+            return jdbc.sql(query)
+                    .params( Map.of("userUuid" , userUuid , "size" , size , "status" , status , "type" , type , "filter" , filter  ,"offset" ,  offSet.apply(size , page) ))
+                    .query(Ticket.class).list();
+        }catch (EmptyResultDataAccessException exception ){
+            log.error(exception.getMessage());
+            throw new ApiException(String.format("User with email %s not found", userUuid));
+        } catch (Exception exception){
+            log.error(exception.getMessage());
+            throw new ApiException("An occurred. Please try again.");
+
+        }
+    }
+
     private final BiFunction<Integer , Integer , Integer> offSet = (size , page) -> page==0 ?0 : page == 1 ? size : (page - 1) * size;
 
 }

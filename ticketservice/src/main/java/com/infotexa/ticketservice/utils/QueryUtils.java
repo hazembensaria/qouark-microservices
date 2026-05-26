@@ -31,6 +31,39 @@ public class QueryUtils {
         return replace(query.toString(), "\\n", " ");
     }
 
+
+    public static String createSelectUserAllTicketsQuery(String status ,String type , String filter) {
+
+        var query = getStringBuilder(SELECT_ALL_TICKETS_BY_USER_UUID_QUERY);
+        if(isNotBlank(status)){
+            query.append(" AND s.status = :status ");
+        }
+        if(isNotBlank(type)){
+            query.append("AND typ.type = :type ");
+        }
+        if(isNotBlank(filter)){
+            query.append("AND t.title ~* :filter ");
+        }
+        query.append("""
+GROUP BY
+  t.ticket_id,
+  t.ticket_uuid,
+  t.title,
+  t.description,
+  t.progress,
+  t.due_date,
+  t.created_at,
+  t.updated_at,
+  s.status,
+  typ.type,
+  pr.priority
+ORDER BY t.created_at DESC
+LIMIT :size OFFSET :offset;
+""");
+        return replace(query.toString() , "\\n" , "");
+
+    }
+
     public static String createSelectUserTicketsQuery(String status ,String type , String filter) {
 
         var query = getStringBuilder(SELECT_TICKETS_BY_USER_UUID_QUERY);

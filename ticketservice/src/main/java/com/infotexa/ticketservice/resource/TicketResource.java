@@ -51,7 +51,7 @@ public class TicketResource {
 
     @GetMapping("/all")
     public ResponseEntity<Response>getAllTickets(@NotNull Authentication authentication , HttpServletRequest request, @RequestParam(value = "page" , defaultValue = "0") int page , @RequestParam(value = "size" , defaultValue = "12") int size , @RequestParam(value = "status" , defaultValue = "") String status ,@RequestParam(value = "type" , defaultValue = "") String type, @RequestParam(value = "filter" , defaultValue = "") String filter ){
-        var tickets = ticketService.getTickets(authentication.getName() , page , size , status , type , filter);
+        var tickets = ticketService.getAllTickets(authentication.getName() , page , size , status , type , filter);
         return created(getUri()).body(getResponse(request , Map.of("tickets" , tickets) , "tickets retrieved successfully" , OK));
     }
 

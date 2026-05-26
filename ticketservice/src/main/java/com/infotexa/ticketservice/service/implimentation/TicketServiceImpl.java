@@ -429,6 +429,11 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.getProjectsByStartup(startupUuid);
     }
 
+    @Override
+    public List<Ticket> getAllTickets(String userUuid, int page, int size, String status, String type, String filter) {
+        return ticketRepository.getAllUserTickets(userUuid, page, size, status, type, filter);
+    }
+
 
     private void addTickets(List<Ticket> tickets, Table table) {
         tickets.forEach(ticket -> {

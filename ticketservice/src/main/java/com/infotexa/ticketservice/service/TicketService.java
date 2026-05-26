@@ -32,4 +32,5 @@ public interface TicketService {
     User getTicketUser(String ticketUuid);
     Project createProject(String userUuid, String organizationUuid, String name, String description, String status);
     List<Project> getProjectsByStartup(String startupUuid);
+    List<Ticket> getAllTickets(String userUuid, int page, int size, String status, String type, String filter);
 }

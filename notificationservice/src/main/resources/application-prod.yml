@@ -4,7 +4,7 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
   kafka:
-    bootstrap-servers: ${KAFKA_SERVER_URL:20.19.82.88:9092 }
+    bootstrap-servers: ${KAFKA_SERVER_URL:20.19.82.88:9092}
 
   jpa:
     hibernate:

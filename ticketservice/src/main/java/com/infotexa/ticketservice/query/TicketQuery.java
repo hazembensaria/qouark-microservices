@@ -44,6 +44,45 @@ public class TicketQuery {
                                         ON t.ticket_id = c.ticket_id
                                     WHERE p.project_uuid = :projectUuid
                             """;
+                public static final String SELECT_ALL_TICKETS_BY_USER_UUID_QUERY =
+                            """
+                                    SELECT
+                                        COUNT(DISTINCT(c.comment_id)) AS comment_count,
+                                        COUNT(DISTINCT(f.file_id)) AS file_count,
+                                        t.ticket_id,
+                                        t.ticket_uuid,
+                                        t.title,
+                                        t.description,
+                                        t.progress,
+                                        t.due_date,
+                                        t.created_at,
+                                        t.updated_at,
+                                        s.status,
+                                        typ.type,
+                                        pr.priority
+                                    FROM tickets t
+                                    JOIN projects p
+                                        ON t.project_id = p.project_id
+                                    JOIN users u
+                                        ON t.user_id = u.user_id
+                                    JOIN ticket_statuses ts
+                                        ON t.ticket_id = ts.ticket_id
+                                    JOIN ticket_types tt
+                                        ON t.ticket_id = tt.ticket_id
+                                    JOIN ticket_priorities tp
+                                        ON t.ticket_id = tp.ticket_id
+                                    JOIN statuses s
+                                        ON s.status_id = ts.status_id
+                                    JOIN types typ
+                                        ON typ.type_id = tt.type_id
+                                    JOIN priorities pr
+                                        ON pr.priority_id = tp.priority_id
+                                    LEFT JOIN files f
+                                        ON t.ticket_id = f.ticket_id
+                                    LEFT JOIN comments c
+                                        ON t.ticket_id = c.ticket_id
+                                    WHERE u.user_uuid = :userUuid
+                            """;
                 public static final String SELECT_PAGE_NUMBER_QUERY =
                             """
                              SELECT CEILING(COUNT(*)::NUMERIC / :size) AS pages FROM tickets t JOIN users u ON t.user_id = u.user_id JOIN ticket_statuses ts ON t.ticket_id = ts.ticket_id JOIN ticket_types tt ON t.ticket_id = tt.ticket_id JOIN ticket_priorities tp ON t.ticket_id = tp.ticket_id JOIN statuses s ON s.status_id = ts.status_id JOIN types typ ON typ.type_id = tt.type_id JOIN priorities pr ON pr.priority_id = tp.priority_id WHERE 1 = 1

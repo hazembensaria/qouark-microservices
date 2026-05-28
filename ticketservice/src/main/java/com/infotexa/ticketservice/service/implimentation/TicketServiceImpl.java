@@ -127,7 +127,9 @@ public class TicketServiceImpl implements TicketService {
              }else {
                  ticket = ticketRepository.getUserTicket(userUuid, ticketUuid);
              }
+             log.info(ticket.toString());
              for(MultipartFile file: files){
+                 log.info(file.getOriginalFilename() , file.getSize() , byteCountToDisplaySize(file.getSize()) , getExtension(file.getOriginalFilename()) , getFileUri(file.getOriginalFilename()));
                  var Attachment = ticketRepository.saveTicketFile(ticket.getTicketId(), file.getOriginalFilename() , file.getSize() ,byteCountToDisplaySize(file.getSize()) , getExtension(file.getOriginalFilename()) , getFileUri(file.getOriginalFilename()));
                  var filename = cleanPath(file.getOriginalFilename());
                  var uploadDir = Paths.get(PHOTO_DIRECTORY).toAbsolutePath().normalize();

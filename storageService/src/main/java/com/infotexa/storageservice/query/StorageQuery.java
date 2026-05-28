@@ -49,6 +49,6 @@ public class StorageQuery {
             """;
     public static final String SHARE_FILE =
             """
-            SELECT share_storage_file(:ownerUuid,:fileUuid,:sharedWithUserUuid,:permission) ;
+            SELECT * FROM share_storage_file(:ownerUuid,:fileUuid,:sharedWithUserUuid,:permission) ;
             """;
 }

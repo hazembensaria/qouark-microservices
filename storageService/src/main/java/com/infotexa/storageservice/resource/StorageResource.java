@@ -167,6 +167,24 @@ public class StorageResource {
         return ok(getResponse(request, Map.of(), "File shared successfully",OK));
     }
 
+    @GetMapping("/shared/folder")
+    public ResponseEntity<Response> sharedFolders(
+            Authentication authentication,
+            HttpServletRequest request
+    ) {
+       var folders = storageService.sharedFolders(authentication.getName());
+        return ok(getResponse(request, Map.of("sharedFolders" , folders), "folder shared successfully",OK));
+    }
+
+    @GetMapping("/shared/files")
+    public ResponseEntity<Response> sharedFiles(
+            Authentication authentication,
+            HttpServletRequest request
+    ) {
+        var files = storageService.sharedFiles(authentication.getName());
+        return ok(getResponse(request, Map.of("sharedFiles" , files), "File shared successfully",OK));
+    }
+
     private URI getUri(){
         return URI.create("/storage/ticketUuid");
     }

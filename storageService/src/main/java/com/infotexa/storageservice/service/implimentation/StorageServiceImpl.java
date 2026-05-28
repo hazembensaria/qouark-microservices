@@ -216,4 +216,14 @@ public class StorageServiceImpl implements StorageService {
     public void shareFile(String ownerUuid, ShareRequest request) {
         storageRepository.shareFile(ownerUuid, request.getResourceUuid(), request.getSharedWithUserUuid(), request.getPermission());
     }
+
+    @Override
+    public List<StorageFolder> sharedFolders(String userUuid) {
+        return storageRepository.sharedFolders(userUuid);
+    }
+
+    @Override
+    public List<StorageFile> sharedFiles(String userUuid) {
+        return storageRepository.sharedFiles(userUuid);
+    }
 }

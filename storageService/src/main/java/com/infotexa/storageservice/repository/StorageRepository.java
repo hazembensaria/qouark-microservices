@@ -20,5 +20,6 @@ public interface StorageRepository {
     StorageFile getStorageFile(String userUuid, String fileUuid);
     void shareFolder(String ownerUuid, String folderUuid, String sharedWithUserUuid, String permission);
     void shareFile(String ownerUuid, String fileUuid, String sharedWithUserUuid, String permission);
-
+    List<StorageFolder> sharedFolders(String userUuid);
+    List<StorageFile> sharedFiles(String userUuid);
 }

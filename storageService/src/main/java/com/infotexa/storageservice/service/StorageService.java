@@ -22,5 +22,6 @@ public interface StorageService {
     FileDownloadResult downloadFile(String userUuid , String fileUuid);
     void shareFolder(String ownerUuid, ShareRequest request);
     void shareFile(String ownerUuid, ShareRequest request);
-
+    List<StorageFolder> sharedFolders(String userUuid);
+    List<StorageFile> sharedFiles(String userUuid);
 }

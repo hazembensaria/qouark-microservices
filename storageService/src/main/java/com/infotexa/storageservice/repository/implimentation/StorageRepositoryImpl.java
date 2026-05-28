@@ -226,4 +226,32 @@ public class StorageRepositoryImpl implements StorageRepository {
                 .query()
                 .singleValue();
     }
+
+    @Override
+    public List<StorageFolder> sharedFolders(String userUuid) {
+        try {
+            return jdbc.sql(SHARED_FOLDERS)
+                    .params(Map.of("userUuid", userUuid))
+                    .query(StorageFolder.class)
+                    .list();
+
+        } catch (Exception e) {
+            log.error("sharedFolders error: {}", e.getMessage());
+            throw new ApiException("Error fetching shared folders");
+        }
+    }
+
+    @Override
+    public List<StorageFile> sharedFiles(String userUuid) {
+        try {
+            return jdbc.sql(SHARED_FILES)
+                    .params(Map.of("userUuid", userUuid))
+                    .query(StorageFile.class)
+                    .list();
+
+        } catch (Exception e) {
+            log.error("sharedFiles error: {}", e.getMessage());
+            throw new ApiException("Error fetching shared files");
+        }
+    }
 }

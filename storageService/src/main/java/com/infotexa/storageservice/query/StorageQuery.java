@@ -51,4 +51,38 @@ public class StorageQuery {
             """
             SELECT * FROM share_storage_file(:ownerUuid,:fileUuid,:sharedWithUserUuid,:permission) ;
             """;
+    public static final String SHARED_FILES =
+            """
+                    SELECT
+                        f.storage_file_id,
+                        f.storage_file_uuid,
+                        f.name,
+                        f.extension,
+                        f.size,
+                        f.formatted_size,
+                        f.uri,
+                        s.permission,
+                        s.created_at AS shared_at
+                    FROM storage_file_shares s
+                    JOIN storage_files f
+                        ON f.storage_file_id = s.storage_file_id
+                    JOIN users u
+                        ON u.user_id = s.shared_with_user_id
+                    WHERE u.user_uuid = :userUuid;
+            """;
+    public static final String SHARED_FOLDERS =
+            """
+            SELECT
+                f.storage_folder_id,
+                f.storage_folder_uuid,
+                f.name,
+                s.permission,
+                s.created_at AS shared_at
+            FROM storage_folder_shares s
+            JOIN storage_folders f
+                ON f.storage_folder_id = s.storage_folder_id
+            JOIN users u
+                ON u.user_id = s.shared_with_user_id
+            WHERE u.user_uuid = :userUuid;
+            """;
 }

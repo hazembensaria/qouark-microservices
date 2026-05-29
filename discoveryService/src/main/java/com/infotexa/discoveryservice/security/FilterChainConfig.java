@@ -22,7 +22,7 @@ public class FilterChainConfig {
                 .userDetailsService(userDetailsService)
                 .exceptionHandling(exception -> exception.accessDeniedHandler(new DiscoveryAccessDeniedHandler()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/eureka/fonts/**" , "/eureka/css/**" , "/eureka/js/**" , "/eureka/images/**" , "/icon/**").permitAll()
+                        .requestMatchers("/eureka/fonts/**" , "/eureka/css/**" , "/eureka/js/**" , "/eureka/images/**" , "/icon/**" , "/actuator/**").permitAll()
                         .requestMatchers("/eureka/**").hasAuthority(APP_READ)
                         .requestMatchers("/**").hasAnyAuthority(APP_READ)
                         .anyRequest().authenticated())

@@ -109,33 +109,49 @@ jobs:
 
           docker push qouark.azurecr.io/${{ matrix.service }}:${{ github.sha }}
 # ---------------- SMOKE TEST ----------------
+
   smoke-test:
     name: Smoke Test
     runs-on: ubuntu-latest
     needs: publish-image
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Login to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: qouark.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Pull and run discovery-service only
+      - name: Pull image
         run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/discovery-service:${{ github.sha }}
+          docker pull qouark.azurecr.io/discovery-service:${{ github.sha }}
 
-          docker run -d -p 5002:5002 --name discovery $IMAGE
+      - name: Run container
+        run: |
+          docker run -d \
+            -p 5002:5002 \
+            --name discovery-service \
+            -e SPRING_PROFILES_ACTIVE=docker \
+            -e SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }} \
+            -e SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
+            -e SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }} \
+            -e SERVER_PORT=5002 \
+            qouark.azurecr.io/discovery-service:${{ github.sha }}
 
+      - name: Health check
+        run: |
           for i in {1..30}; do
             if curl -sSf http://localhost:5002/actuator/health; then
-              echo "✅ Discovery is healthy"
+              echo "✅ Discovery service is UP"
               exit 0
             fi
-            sleep 2
+            echo "⏳ waiting for startup..."
+            sleep 3
           done
-
-          echo "❌ Failed"
-          docker logs discovery
+          echo "❌ Smoke test failed"
+          docker logs discovery-service
           exit 1
-
 
 # ---------------- DEPLOY ----------------
   deploy:

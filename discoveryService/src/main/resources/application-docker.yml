@@ -1,8 +1,26 @@
 UI_APP_URL: http://localhost:3000/login
 
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER_URL:20.19.82.88:9092}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default-schema: public
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health, info
+
+SERVER:
+  PORT: ${SERVER_PORT:5002}

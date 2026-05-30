@@ -21,6 +21,8 @@ public class TicketQuery {
                                         s.status,
                                         typ.type,
                                         pr.priority
+                                        u.first_name,
+                                        u.last_name
                                     FROM tickets t
                                     JOIN projects p
                                         ON t.project_id = p.project_id

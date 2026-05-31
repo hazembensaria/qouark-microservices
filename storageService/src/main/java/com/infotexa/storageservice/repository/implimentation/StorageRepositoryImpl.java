@@ -115,8 +115,7 @@ public class StorageRepositoryImpl implements StorageRepository {
         try {
              jdbc.sql(DELETE_File)
                     .params(Map.of("fileUuid", fileUuid))
-                    .query(Boolean.class)
-                    .single();
+                    .update();
 
         } catch (Exception e) {
             log.error("deleteFile error: {}", e.getMessage());
@@ -260,8 +259,7 @@ public class StorageRepositoryImpl implements StorageRepository {
         try {
             jdbc.sql(DELETE_FOLDER)
                     .params(Map.of("folderUuid", uuid))
-                    .query()
-                    .singleValue();
+                    .update();
         } catch (Exception e) {
             log.error("deleteFolder error: {}", e.getMessage());
             throw new ApiException("Error deleting folder");

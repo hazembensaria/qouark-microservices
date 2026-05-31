@@ -88,7 +88,7 @@ GROUP BY
   t.updated_at,
   s.status,
   u.first_name,
-  u.last_name
+  u.last_name,
   typ.type,
   pr.priority
 ORDER BY t.created_at DESC

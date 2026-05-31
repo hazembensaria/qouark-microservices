@@ -20,7 +20,7 @@ public class TicketQuery {
                                         t.updated_at,
                                         s.status,
                                         typ.type,
-                                        pr.priority
+                                        pr.priority,
                                         u.first_name,
                                         u.last_name
                                     FROM tickets t

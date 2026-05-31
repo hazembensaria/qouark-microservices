@@ -21,7 +21,7 @@ eureka:
 
 ui:
   app:
-    url: ${UI_APP_URL:http://localhost:3000/login}
+    url: ${UI_APP_URL:https://www.qouark.app/login}
 
 keys:
   private: ${PRIVATE_KEY}

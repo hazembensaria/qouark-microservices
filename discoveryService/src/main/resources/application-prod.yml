@@ -11,4 +11,4 @@ PASSWORD: admin
 ROLES: EUREKA_CLIENT
 
 SERVER_PORT: 5002
-UI_APP_URL: http://localhost:3000/login
+UI_APP_URL: https://www.qouark.app/login

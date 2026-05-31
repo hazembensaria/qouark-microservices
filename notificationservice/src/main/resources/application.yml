@@ -62,7 +62,7 @@ spring:
             enable: true
             required: true
     verify:
-      host: ${VERIFY_EMAIL_HOST:http://localhost:3000}
+      host: ${VERIFY_EMAIL_HOST:https://www.qouark.app}
 
 eureka:
   instance:

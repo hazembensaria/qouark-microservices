@@ -45,7 +45,7 @@ public class ResourceServiceConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         var corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200" , "http://localhost:3000"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200" , "http://localhost:3000" , "https://www.qouark.app"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
         corsConfiguration.setExposedHeaders(List.of("Authorization"));

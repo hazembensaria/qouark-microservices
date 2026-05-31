@@ -26,7 +26,7 @@ JWKS:
 
 UI:
   APP:
-    URL: http://localhost:3000/login
+    URL: https://www.qouark.app/login
 
 
 

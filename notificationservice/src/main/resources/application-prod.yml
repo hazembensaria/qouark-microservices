@@ -33,7 +33,7 @@ MAIL:
 JWKS:
   URI : https://auth-service.happyforest-b11122d9.francecentral.azurecontainerapps.io/oauth2/jwks
 
-UI_APP_URL: http://localhost:3000/login
+UI_APP_URL: https://www.qouark.app/login
 
 KAFKA:
   SERVER:

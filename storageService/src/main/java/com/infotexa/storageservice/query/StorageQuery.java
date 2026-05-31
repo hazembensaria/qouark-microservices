@@ -61,7 +61,7 @@ public class StorageQuery {
             """;
     public static final String GET_TRASH_FOLDERS =
             """
-            SELECT sf.* FROM storage_folders sf JOIN users u ON u.user_id = sf.user_id WHERE u.user_uuid = :userUuid AND sf.is_deleted = true;
+            SELECT sf.* FROM storage_folders sf JOIN users u ON u.user_id = sf.owner_id WHERE u.user_uuid = :userUuid AND sf.is_deleted = true;
             """;
     public static final String GET_TRASH_FILES =
             """

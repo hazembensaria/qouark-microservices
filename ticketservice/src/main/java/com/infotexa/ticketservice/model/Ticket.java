@@ -18,6 +18,8 @@ public class Ticket {
     private String status;
     private String type;
     private String priority;
+    private String firstName;
+    private String lastName;
     private int fileCount;
     private int commentCount;
     private int progress;

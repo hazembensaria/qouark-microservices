@@ -28,6 +28,7 @@ import java.util.Map;
 
 import static com.infotexa.storageservice.consatant.Constant.FILE_NAME_HEADER;
 import static com.infotexa.storageservice.utils.RequestUtils.getResponse;
+import static java.util.Collections.EMPTY_MAP;
 import static java.util.Collections.emptyMap;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -59,6 +60,18 @@ public class StorageResource {
     public ResponseEntity<Response> getFolders(@NotNull Authentication authentication, HttpServletRequest request, @PathVariable String folderUuid) {
         var folders = storageService.getFolders(folderUuid);
         return ok(getResponse(request, Map.of("folders", folders), "folders retrieved successfully", OK));
+    }
+
+    @GetMapping("/folders/trash")
+    public ResponseEntity<Response> getTrashFolders(@NotNull Authentication authentication, HttpServletRequest request) {
+        var folders = storageService.getTrashFolders(authentication.getName());
+        return ok(getResponse(request, Map.of("folders", folders), "folders retrieved successfully", OK));
+    }
+
+    @GetMapping("/files/trash")
+    public ResponseEntity<Response> getTrashFiles(@NotNull Authentication authentication, HttpServletRequest request) {
+        var files = storageService.getTrashFiles(authentication.getName());
+        return ok(getResponse(request, Map.of("files", files), "folders retrieved successfully", OK));
     }
 
     // ================= FILES =================
@@ -111,12 +124,12 @@ public class StorageResource {
             @RequestParam String fileUuid
     ) {
 
-        var result = storageService.deleteFile(fileUuid);
+        storageService.deleteFile(fileUuid);
 
         return ok()
                 .body(getResponse(
                         request,
-                        Map.of("deleted", result),
+                        Map.of(),
                         "file deleted successfully",
                         OK
                 ));
@@ -183,6 +196,15 @@ public class StorageResource {
     ) {
         var files = storageService.sharedFiles(authentication.getName());
         return ok(getResponse(request, Map.of("sharedFiles" , files), "File shared successfully",OK));
+    }
+
+    @DeleteMapping("/folder/{uuid}")
+    public ResponseEntity<Response> deleteForever(@PathVariable String uuid,
+                              Authentication authentication,
+                              HttpServletRequest request) {
+        storageService.deleteFolder(uuid);
+        return ok(getResponse(request, Map.of(), "File shared successfully",OK));
+
     }
 
     private URI getUri(){

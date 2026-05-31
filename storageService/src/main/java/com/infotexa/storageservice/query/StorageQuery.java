@@ -51,6 +51,22 @@ public class StorageQuery {
             """
             SELECT * FROM share_storage_file(:ownerUuid,:fileUuid,:sharedWithUserUuid,:permission) ;
             """;
+    public static final String DELETE_FOLDER =
+            """
+            UPDATE storage_folders SET is_deleted = TRUE WHERE storage_folder_uuid = :folderUuid ;
+            """;
+    public static final String DELETE_File =
+            """
+            UPDATE storage_files SET is_deleted = TRUE WHERE storage_file_uuid = :fileUuid ;
+            """;
+    public static final String GET_TRASH_FOLDERS =
+            """
+            SELECT sf.* FROM storage_folders sf JOIN users u ON u.user_id = sf.user_id WHERE u.user_uuid = :userUuid AND sf.is_deleted = true;
+            """;
+    public static final String GET_TRASH_FILES =
+            """
+            SELECT sf.* FROM storage_files sf JOIN users u ON u.user_id = sf.owner_id WHERE u.user_uuid = :userUuid AND sf.is_deleted = true;
+            """;
     public static final String SHARED_FILES =
             """
                     SELECT

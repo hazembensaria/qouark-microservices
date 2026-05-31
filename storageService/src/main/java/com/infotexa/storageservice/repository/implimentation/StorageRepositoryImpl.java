@@ -111,9 +111,9 @@ public class StorageRepositoryImpl implements StorageRepository {
         }
     }
     @Override
-    public Boolean deleteFile(String fileUuid) {
+    public void deleteFile(String fileUuid) {
         try {
-            return jdbc.sql(DELETE_STORAGE_FILE)
+             jdbc.sql(DELETE_File)
                     .params(Map.of("fileUuid", fileUuid))
                     .query(Boolean.class)
                     .single();
@@ -252,6 +252,47 @@ public class StorageRepositoryImpl implements StorageRepository {
         } catch (Exception e) {
             log.error("sharedFiles error: {}", e.getMessage());
             throw new ApiException("Error fetching shared files");
+        }
+    }
+
+    @Override
+    public void deleteFolder(String uuid) {
+        try {
+            jdbc.sql(DELETE_FOLDER)
+                    .params(Map.of("folderUuid", uuid))
+                    .query()
+                    .singleValue();
+        } catch (Exception e) {
+            log.error("deleteFolder error: {}", e.getMessage());
+            throw new ApiException("Error deleting folder");
+        }
+    }
+
+    @Override
+    public List<StorageFolder> getTrashFolders(String userUuid) {
+        try {
+            return jdbc.sql(GET_TRASH_FOLDERS)
+                    .params(Map.of("userUuid", userUuid))
+                    .query(StorageFolder.class)
+                    .list();
+
+        } catch (Exception e) {
+            log.error("getTrashFolders error: {}", e.getMessage());
+            throw new ApiException("Error fetching trash folders");
+        }
+    }
+
+    @Override
+    public List<StorageFile> getTrashFiles(String userUuid) {
+        try {
+            return jdbc.sql(GET_TRASH_FILES)
+                    .params(Map.of("userUuid", userUuid))
+                    .query(StorageFile.class)
+                    .list();
+
+        } catch (Exception e) {
+            log.error("getTrashFiles error: {}", e.getMessage());
+            throw new ApiException("Error fetching trash files");
         }
     }
 }

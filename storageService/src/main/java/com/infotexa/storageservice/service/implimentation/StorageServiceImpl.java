@@ -181,8 +181,8 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public Boolean deleteFile(String fileUuid) {
-        return storageRepository.deleteFile(fileUuid);
+    public void deleteFile(String fileUuid) {
+        storageRepository.deleteFile(fileUuid);
     }
 
     @Override
@@ -225,5 +225,20 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public List<StorageFile> sharedFiles(String userUuid) {
         return storageRepository.sharedFiles(userUuid);
+    }
+
+    @Override
+    public void deleteFolder(String uuid) {
+       storageRepository.deleteFolder(uuid);
+    }
+
+    @Override
+    public List<StorageFolder> getTrashFolders(String userUuid) {
+        return storageRepository.getTrashFolders(userUuid);
+    }
+
+    @Override
+    public List<StorageFile> getTrashFiles(String userUuid) {
+        return storageRepository.getTrashFiles(userUuid);
     }
 }

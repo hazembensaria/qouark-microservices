@@ -13,7 +13,7 @@ public interface StorageRepository {
     StorageFolder getFolderByUuid(String folderUuid);
     StorageFile saveFile(String fileUuid, String userUuid, String folderUuid, String name, String extension, Long size, String formattedSize, String storagePath, String uri);
     List<StorageFile> getFiles(String folderUuid);
-    Boolean deleteFile(String fileUuid);
+    void deleteFile(String fileUuid);
     String createPublicLink(String publicLinkUuid, String fileUuid, String token, String userUuid);
     boolean checkQuota(String userUuid, long fileSize);
     StorageFolder getRootFolder(String userUuid);
@@ -22,4 +22,7 @@ public interface StorageRepository {
     void shareFile(String ownerUuid, String fileUuid, String sharedWithUserUuid, String permission);
     List<StorageFolder> sharedFolders(String userUuid);
     List<StorageFile> sharedFiles(String userUuid);
+    void deleteFolder(String uuid);
+    List<StorageFolder> getTrashFolders(String userUuid);
+    List<StorageFile> getTrashFiles(String userUuid);
 }

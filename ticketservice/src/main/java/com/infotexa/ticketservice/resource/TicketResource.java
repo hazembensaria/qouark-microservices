@@ -169,7 +169,8 @@ public class TicketResource {
 
     @PostMapping("/report")
     public ResponseEntity<Response>report(@NotNull Authentication authentication , HttpServletRequest request,  @RequestBody ReportRequest report){
-        var tickets = ticketService.report(authentication.getName() , report.getFilter() , report.getFromDate() , report.getToDate() , report.getStatuses() , report.getTypes() , report.getPriorities());
+        log.info("Received report request: {}", report);
+        var tickets = ticketService.report(report.getProjectUuid() , report.getFilter() , report.getFromDate() , report.getToDate() , report.getStatuses() , report.getTypes() , report.getPriorities());
         return ok(getResponse(request , Map.of("tickets" , tickets) , "report generated successfully" , OK));
     }
 

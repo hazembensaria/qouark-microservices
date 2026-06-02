@@ -177,7 +177,7 @@ LIMIT :size OFFSET :offset;
     }
 
     public static  String createTicketReportQuery(String userUuid , String filter, String fromDate , String toDate , List<String> statuses ,List<String> types ,List<String> priorities){
-        var query = getStringBuilder("SELECT t.ticket_id ,t.ticket_uuid ,t.title ,t.description , t.progress , t.due_date , t.created_at , t.updated_at , s.status , typ.type ,pr.priority FROM tickets t JOIN users u ON t.user_id = u.user_id JOIN ticket_statuses ts ON t.ticket_id = ts.ticket_id JOIN ticket_types tt ON t.ticket_id = tt.ticket_id JOIN ticket_priorities tp ON t.ticket_id = tp.ticket_id JOIN statuses s ON s.status_id = ts.status_id JOIN types typ ON typ.type_id = tt.type_id JOIN priorities pr ON pr.priority_id = tp.priority_id WHERE 1= 1");
+        var query = getStringBuilder("SELECT t.ticket_id ,t.ticket_uuid ,t.title ,t.description , t.progress , t.due_date , t.created_at , t.updated_at , s.status , typ.type ,pr.priority FROM tickets t JOIN projects p ON p.project_id = t.project_id JOIN users u ON t.user_id = u.user_id JOIN ticket_statuses ts ON t.ticket_id = ts.ticket_id JOIN ticket_types tt ON t.ticket_id = tt.ticket_id JOIN ticket_priorities tp ON t.ticket_id = tp.ticket_id JOIN statuses s ON s.status_id = ts.status_id JOIN types typ ON typ.type_id = tt.type_id JOIN priorities pr ON pr.priority_id = tp.priority_id WHERE 1 = 1 ");
         if(isNotBlank(fromDate) ){
             query.append(" AND t.created_at >= " + "'" + fromDate + "'");
         }
@@ -211,7 +211,7 @@ LIMIT :size OFFSET :offset;
         if(isNotBlank(filter)) {
             query.append(" AND t.title ~* " + "'" + filter + "'");
         }
-        query.append(" AND u.user_uuid = " + "'" + userUuid + "'" );
+        query.append(" AND  p.project_uuid = " + "'" + userUuid + "'" );
         query.append(" ORDER BY t.created_at DESC ;");
         return replace(query.toString() , "\\n" , "");
 

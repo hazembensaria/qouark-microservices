@@ -218,8 +218,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> report(String userUuid, String filter, String fromDate, String toDate, List<String> statues, List<String> types, List<String> priorities) {
-        var user = userService.getUserByUuid(userUuid);
-        return hasElevatedPermissions.apply(user) ?  ticketRepository.report(filter , fromDate , toDate , statues , types , priorities) : ticketRepository.report(userUuid , filter , fromDate , toDate , statues , types , priorities);
+//        var user = userService.getUserByUuid(userUuid);
+        return ticketRepository.report(userUuid , filter , fromDate , toDate , statues , types , priorities);
     }
 
 //    @Override

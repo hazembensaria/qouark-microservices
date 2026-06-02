@@ -17,5 +17,6 @@ public class ReportRequest {
     private List<String> statuses;
     private List<String> types;
     private List<String> priorities;
+    private String projectUuid;
 
 }

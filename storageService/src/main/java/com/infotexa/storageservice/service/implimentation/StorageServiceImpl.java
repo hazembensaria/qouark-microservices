@@ -5,7 +5,7 @@ import com.infotexa.storageservice.dtoRequest.ShareRequest;
 import com.infotexa.storageservice.exception.ApiException;
 import com.infotexa.storageservice.model.StorageFile;
 import com.infotexa.storageservice.model.StorageFolder;
-import com.infotexa.storageservice.model.StorageStats;
+import com.infotexa.storageservice.model.UserStorageQuota;
 import com.infotexa.storageservice.repository.StorageRepository;
 import com.infotexa.storageservice.service.StorageService;
 import com.infotexa.storageservice.service.UserService;
@@ -243,14 +243,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public StorageStats userQuota(String name) {
-        var data = storageRepository.userQuota(name);
-
-        long used = data.getUsedSizeBytes();
-        long max = data.getMaxSizeBytes();
-
-        double percent = max == 0 ? 0 : (used * 100.0) / max;
-
-        return new StorageStats(used, max, percent);
+    public UserStorageQuota userQuota(String name) {
+        return storageRepository.userQuota(name);
     }
 }

@@ -3,7 +3,7 @@ package com.infotexa.storageservice.repository.implimentation;
 import com.infotexa.storageservice.exception.ApiException;
 import com.infotexa.storageservice.model.StorageFile;
 import com.infotexa.storageservice.model.StorageFolder;
-import com.infotexa.storageservice.model.StorageStats;
+import com.infotexa.storageservice.model.UserStorageQuota;
 import com.infotexa.storageservice.repository.StorageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -295,11 +295,11 @@ public class StorageRepositoryImpl implements StorageRepository {
     }
 
     @Override
-    public StorageStats userQuota(String name) {
+    public UserStorageQuota userQuota(String name) {
         try {
             return jdbc.sql(USER_QUOTA)
                     .params(Map.of("userUuid", name))
-                    .query(StorageStats.class)
+                    .query(UserStorageQuota.class)
                     .single();
 
         } catch (Exception e) {

@@ -2,7 +2,7 @@ package com.infotexa.storageservice.repository;
 
 import com.infotexa.storageservice.model.StorageFile;
 import com.infotexa.storageservice.model.StorageFolder;
-import com.infotexa.storageservice.model.StorageStats;
+import com.infotexa.storageservice.model.UserStorageQuota;
 
 import java.util.List;
 
@@ -27,5 +27,5 @@ public interface StorageRepository {
     List<StorageFolder> getTrashFolders(String userUuid);
     List<StorageFile> getTrashFiles(String userUuid);
 
-    StorageStats userQuota(String name);
+    UserStorageQuota userQuota(String name);
 }

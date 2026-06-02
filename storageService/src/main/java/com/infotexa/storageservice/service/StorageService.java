@@ -4,9 +4,9 @@ import com.infotexa.storageservice.domain.FileDownloadResult;
 import com.infotexa.storageservice.dtoRequest.ShareRequest;
 import com.infotexa.storageservice.model.StorageFile;
 import com.infotexa.storageservice.model.StorageFolder;
+import com.infotexa.storageservice.model.StorageStats;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
 import java.util.List;
 
 public interface StorageService {
@@ -27,4 +27,5 @@ public interface StorageService {
     void deleteFolder(String uuid);
     List<StorageFolder> getTrashFolders(String name);
     List<StorageFile> getTrashFiles(String name);
+    StorageStats userQuota(String name);
 }

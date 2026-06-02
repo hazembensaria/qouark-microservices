@@ -3,7 +3,7 @@ package com.infotexa.storageservice.repository.implimentation;
 import com.infotexa.storageservice.exception.ApiException;
 import com.infotexa.storageservice.model.StorageFile;
 import com.infotexa.storageservice.model.StorageFolder;
-import com.infotexa.storageservice.query.StorageQuery;
+import com.infotexa.storageservice.model.StorageStats;
 import com.infotexa.storageservice.repository.StorageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -291,6 +291,20 @@ public class StorageRepositoryImpl implements StorageRepository {
         } catch (Exception e) {
             log.error("getTrashFiles error: {}", e.getMessage());
             throw new ApiException("Error fetching trash files");
+        }
+    }
+
+    @Override
+    public StorageStats userQuota(String name) {
+        try {
+            return jdbc.sql(USER_QUOTA)
+                    .params(Map.of("userUuid", name))
+                    .query(StorageStats.class)
+                    .single();
+
+        } catch (Exception e) {
+            log.error("userQuota error: {}", e.getMessage());
+            throw new ApiException("Error fetching user quota");
         }
     }
 }

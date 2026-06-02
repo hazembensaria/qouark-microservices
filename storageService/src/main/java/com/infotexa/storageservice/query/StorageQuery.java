@@ -67,6 +67,15 @@ public class StorageQuery {
             """
             SELECT sf.* FROM storage_files sf JOIN users u ON u.user_id = sf.owner_id WHERE u.user_uuid = :userUuid AND sf.is_deleted = true;
             """;
+    public static final String USER_QUOTA =
+            """
+                    SELECT
+                        uq.used_size_bytes,
+                        uq.max_size_bytes
+                    FROM user_storage_quotas uq
+                    JOIN users u ON u.user_id = uq.user_id
+                    WHERE u.user_uuid = :userUuid;
+            """;
     public static final String SHARED_FILES =
             """
                     SELECT

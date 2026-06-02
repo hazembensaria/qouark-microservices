@@ -198,6 +198,15 @@ public class StorageResource {
         return ok(getResponse(request, Map.of("sharedFiles" , files), "File shared successfully",OK));
     }
 
+    @GetMapping("/quota")
+    public ResponseEntity<Response> userQuota(
+            Authentication authentication,
+            HttpServletRequest request
+    ) {
+        var quota = storageService.userQuota(authentication.getName());
+        return ok(getResponse(request, Map.of("quota" , quota), "quota fetched successfully",OK));
+    }
+
     @DeleteMapping("/folder/{uuid}")
     public ResponseEntity<Response> deleteForever(@PathVariable String uuid,
                               Authentication authentication,

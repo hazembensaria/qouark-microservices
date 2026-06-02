@@ -5,6 +5,7 @@ import com.infotexa.storageservice.dtoRequest.ShareRequest;
 import com.infotexa.storageservice.exception.ApiException;
 import com.infotexa.storageservice.model.StorageFile;
 import com.infotexa.storageservice.model.StorageFolder;
+import com.infotexa.storageservice.model.StorageStats;
 import com.infotexa.storageservice.repository.StorageRepository;
 import com.infotexa.storageservice.service.StorageService;
 import com.infotexa.storageservice.service.UserService;
@@ -21,7 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.infotexa.storageservice.consatant.Constant.PHOTO_DIRECTORY;
 import static com.infotexa.storageservice.consatant.Constant.STORAGE_DIRECTORY;
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.apache.commons.io.FilenameUtils.getExtension;
@@ -240,5 +240,17 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public List<StorageFile> getTrashFiles(String userUuid) {
         return storageRepository.getTrashFiles(userUuid);
+    }
+
+    @Override
+    public StorageStats userQuota(String name) {
+        var data = storageRepository.userQuota(name);
+
+        long used = data.getUsedSizeBytes();
+        long max = data.getMaxSizeBytes();
+
+        double percent = max == 0 ? 0 : (used * 100.0) / max;
+
+        return new StorageStats(used, max, percent);
     }
 }

@@ -39,6 +39,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -310,14 +312,15 @@ public class TicketServiceImpl implements TicketService {
         try {
 
             // 1. Response headers (VERY IMPORTANT)
-            response.setContentType("application/pdf");
-
             String reportFilename =
                     today("yyyy-MM-dd-HH-mm-ss") + "-report.pdf";
 
+            response.setContentType("application/pdf");
+
             response.setHeader(
                     "Content-Disposition",
-                    "attachment; filename=" + reportFilename
+                    "attachment; filename*=UTF-8''" +
+                            URLEncoder.encode(reportFilename, StandardCharsets.UTF_8)
             );
 
             // 2. Get data

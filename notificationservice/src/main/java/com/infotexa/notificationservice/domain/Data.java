@@ -19,4 +19,5 @@ public class Data {
     private String comment;
     private String date;
     private String files;
+    private String organization;
 }

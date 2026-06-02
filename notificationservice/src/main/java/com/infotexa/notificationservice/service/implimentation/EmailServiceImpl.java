@@ -33,8 +33,10 @@ public class EmailServiceImpl implements EmailService {
     public static final String NEW_TICKET_TEMPLATE = "newticket";
     public static final String NEW_COMMENT_TEMPLATE = "newcomment";
     public static final String NEW_FILE_TEMPLATE = "newfile";
+    public static final String NEW_INVITATION = "newinvitaion";
     public static final String NEW_TICKET_REQUEST = "New Ticket Request";
     public static final String PASSWORD_RESET_REQUEST = "Password Reset Request";
+    public static final String INVITATION_REQUEST = "Invitaion Request";
     private final JavaMailSender emailSender;
     private final TemplateEngine templateEngine;
     @Value("${VERIFY_EMAIL_HOST}")
@@ -63,6 +65,26 @@ public class EmailServiceImpl implements EmailService {
             log.error(exception.getMessage());
         }
 
+    }
+
+    @Override
+    public void sendNewInvitationHtmlEmail(String name, String to , String organization) {
+        try {
+            var context = new Context();
+            context.setVariables(Map.of("name" , name , "organization" , organization ));
+            String text = templateEngine.process(NEW_INVITATION, context);
+            MimeMessage message = getMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8);
+            helper.setPriority(1);
+            helper.setSubject(INVITATION_REQUEST);
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setText(text, true);
+            emailSender.send(message);
+
+        }catch (Exception exception){
+            log.error(exception.getMessage());
+        }
     }
 
     @Override

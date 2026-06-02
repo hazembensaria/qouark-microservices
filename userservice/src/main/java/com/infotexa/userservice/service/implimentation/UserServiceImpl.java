@@ -25,8 +25,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.infotexa.userservice.consatant.Constant.PHOTO_DIRECTORY;
-import static com.infotexa.userservice.enumeration.EventType.RESETPASSWORD;
-import static com.infotexa.userservice.enumeration.EventType.USER_CREATED;
+import static com.infotexa.userservice.enumeration.EventType.*;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Map.*;
 import static java.util.Objects.nonNull;
@@ -262,13 +261,16 @@ public class UserServiceImpl implements UserService {
 
     public Invitation inviteUser(String inviterUuid, String startupUuid, String email, String role) {
         String invitationUuid = UUID.randomUUID().toString();
-        return userRepository.createInvitation(
+        var user = userRepository.getUserByEmail(email);
+        var invitation =  userRepository.createInvitation(
                 startupUuid,
                 email,
                 inviterUuid,
                 role,
                 invitationUuid
         );
+        publisher.publishEvent(new Event(ORGANIZATION_INVITATION, of( "email" ,email , "organization" , invitation.getStartupName(), "name" , capitalizeFully(user.getFirstName()))));
+        return invitation;
     }
 
     public List<Invitation> getMyInvitations(String userUuid) {

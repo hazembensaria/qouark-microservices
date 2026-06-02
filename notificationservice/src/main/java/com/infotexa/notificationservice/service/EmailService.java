@@ -6,6 +6,7 @@ public interface EmailService {
 
 
    void sendNewAccountHtmlEmail(String name , String to , String token);
+   void sendNewInvitationHtmlEmail(String name , String to , String organization );
    void sendPasswordResetHtmlEmail(String name , String to , String token);
    void sendNewTicketHtmlEmail(String name , String email , String ticketTitle , String ticketNumber , String priority );
    void sendNewCommentHtmlEmail(String name , String email , String comment , String ticketTitle , String ticketNumber , String priority , String date);

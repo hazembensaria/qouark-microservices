@@ -33,10 +33,10 @@ public class EmailServiceImpl implements EmailService {
     public static final String NEW_TICKET_TEMPLATE = "newticket";
     public static final String NEW_COMMENT_TEMPLATE = "newcomment";
     public static final String NEW_FILE_TEMPLATE = "newfile";
-    public static final String NEW_INVITATION = "newinvitaion";
+    public static final String NEW_INVITATION = "newinvitation";
     public static final String NEW_TICKET_REQUEST = "New Ticket Request";
     public static final String PASSWORD_RESET_REQUEST = "Password Reset Request";
-    public static final String INVITATION_REQUEST = "Invitaion Request";
+    public static final String INVITATION_REQUEST = "Invitation Request";
     private final JavaMailSender emailSender;
     private final TemplateEngine templateEngine;
     @Value("${VERIFY_EMAIL_HOST}")

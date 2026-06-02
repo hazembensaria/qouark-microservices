@@ -14,7 +14,7 @@ spring:
         webmvc:
           routes:
             - id: authorization-server
-              uri:  https://auth-service.happyforest-b11122d9.francecentral.azurecontainerapps.io
+              uri:  https://login.qouark.app
               predicates:
                 - Path=/authorization/**
             - id: user-service

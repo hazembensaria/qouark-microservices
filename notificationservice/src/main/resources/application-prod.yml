@@ -31,7 +31,7 @@ MAIL:
 #MAIL_PASSWORD: sbynnbsuxszzgmup
 
 JWKS:
-  URI : https://auth-service.happyforest-b11122d9.francecentral.azurecontainerapps.io/oauth2/jwks
+  URI : https://login.qouark.app/oauth2/jwks
 
 UI_APP_URL: https://www.qouark.app/login
 

@@ -323,9 +323,7 @@ public class TicketServiceImpl implements TicketService {
             // 2. Get data
             var user = userService.getUserByUuid(userUuid);
 
-            var tickets = hasElevatedPermissions.apply(user)
-                    ? ticketRepository.report(filter, fromDate, toDate, statuses, types, priorities)
-                    : ticketRepository.report(userUuid, filter, fromDate, toDate, statuses, types, priorities);
+            var tickets = ticketRepository.report(userUuid, filter, fromDate, toDate, statuses, types, priorities);
 
             // 3. PDF generation (SAFE STREAM HANDLING)
             try (
@@ -342,7 +340,7 @@ public class TicketServiceImpl implements TicketService {
 
                 // Optional: logo from classpath (DOCKER SAFE)
                 InputStream logoStream =
-                        getClass().getResourceAsStream("/static/histo.png");
+                        getClass().getResourceAsStream("/static/logo.png");
 
                 if (logoStream != null) {
                     ImageData data = ImageDataFactory.create(logoStream.readAllBytes());
@@ -355,7 +353,7 @@ public class TicketServiceImpl implements TicketService {
 
                 // Title
                 document.add(
-                        new Paragraph("CAT SUPPORT TICKET REPORT")
+                        new Paragraph("QOUARK SUPPORT TICKET REPORT")
                                 .setFont(bold)
                                 .setFontSize(20)
                                 .setTextAlignment(TextAlignment.CENTER)

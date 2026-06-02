@@ -176,7 +176,7 @@ public class TicketResource {
 
     @PostMapping( value = "/report/download" , produces = {APPLICATION_PDF_VALUE})
     public ResponseEntity<ResponseEntity.BodyBuilder>exportPdf(@NotNull Authentication authentication , HttpServletResponse response, @RequestBody ReportRequest report){
-        ticketService.exportPdf(response , authentication.getName() , report.getFilter() , report.getFromDate() , report.getToDate() , report.getStatuses() , report.getTypes() , report.getPriorities());
+        ticketService.exportPdf(response , report.getProjectUuid() , report.getFilter() , report.getFromDate() , report.getToDate() , report.getStatuses() , report.getTypes() , report.getPriorities());
         return ok().build();
     }
 

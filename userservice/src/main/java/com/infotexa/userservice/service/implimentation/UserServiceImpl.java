@@ -269,6 +269,8 @@ public class UserServiceImpl implements UserService {
                 role,
                 invitationUuid
         );
+        log.info("name={}", user.toString());
+        log.info("organization={}", invitation.getStartupName());
         publisher.publishEvent(new Event(ORGANIZATION_INVITATION, of( "email" ,email , "organization" , invitation.getStartupName(), "name" , capitalizeFully(user.getFirstName()))));
         return invitation;
     }

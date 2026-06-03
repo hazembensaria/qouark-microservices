@@ -31,6 +31,7 @@
             var data = mapper.convertValue(notification.getPayload().getData(), Data.class);
             switch (notification.getPayload().getEventType()){
              case RESETPASSWORD -> emailService.sendPasswordResetHtmlEmail(data.getName() , data.getEmail() , data.getToken());
+             case STORAGE_SHARE -> emailService.sendSharedFolderHtmlEmail(data.getName() , data.getEmail());
              case ORGANIZATION_INVITATION -> emailService.sendNewInvitationHtmlEmail(data.getName() , data.getEmail() , data.getOrganization());
              case USER_CREATED -> emailService.sendNewAccountHtmlEmail(data.getName() , data.getEmail() , data.getToken());
              case TICKET_CREATED -> emailService.sendNewTicketHtmlEmail(data.getName() , data.getEmail() , data.getTicketTitle() , data.getTicketNumber() , data.getPriority());

@@ -18,6 +18,7 @@ import org.thymeleaf.context.Context;
 import java.util.Date;
 import java.util.Map;
 
+import static com.infotexa.notificationservice.enumeration.EventType.STORAGE_SHARE;
 import static com.infotexa.notificationservice.utils.EmailUtils.*;
 
 
@@ -34,6 +35,7 @@ public class EmailServiceImpl implements EmailService {
     public static final String NEW_COMMENT_TEMPLATE = "newcomment";
     public static final String NEW_FILE_TEMPLATE = "newfile";
     public static final String NEW_INVITATION = "newinvitation";
+    public static final String SHARE_FOLDER = "sharefolder";
     public static final String NEW_TICKET_REQUEST = "New Ticket Request";
     public static final String PASSWORD_RESET_REQUEST = "Password Reset Request";
     public static final String INVITATION_REQUEST = "Invitation Request";
@@ -77,6 +79,26 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8);
             helper.setPriority(1);
             helper.setSubject(INVITATION_REQUEST);
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setText(text, true);
+            emailSender.send(message);
+
+        }catch (Exception exception){
+            log.error(exception.getMessage());
+        }
+    }
+
+    @Override
+    public void sendSharedFolderHtmlEmail(String name, String to) {
+        try {
+            var context = new Context();
+            context.setVariables(Map.of("name" , name));
+            String text = templateEngine.process(SHARE_FOLDER, context);
+            MimeMessage message = getMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8);
+            helper.setPriority(1);
+            helper.setSubject("Shared Folder Notification");
             helper.setFrom(fromEmail);
             helper.setTo(to);
             helper.setText(text, true);

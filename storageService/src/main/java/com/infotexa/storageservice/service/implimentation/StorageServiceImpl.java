@@ -2,6 +2,7 @@ package com.infotexa.storageservice.service.implimentation;
 
 import com.infotexa.storageservice.domain.FileDownloadResult;
 import com.infotexa.storageservice.dtoRequest.ShareRequest;
+import com.infotexa.storageservice.event.Event;
 import com.infotexa.storageservice.exception.ApiException;
 import com.infotexa.storageservice.model.StorageFile;
 import com.infotexa.storageservice.model.StorageFolder;
@@ -11,6 +12,7 @@ import com.infotexa.storageservice.service.StorageService;
 import com.infotexa.storageservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,8 +25,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static com.infotexa.storageservice.consatant.Constant.STORAGE_DIRECTORY;
+import static com.infotexa.storageservice.enumeration.EventType.STORAGE_SHARE;
+import static java.util.Map.of;
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.apache.commons.lang.WordUtils.capitalizeFully;
 import static org.springframework.util.StringUtils.cleanPath;
 
 @Slf4j
@@ -34,6 +39,7 @@ public class StorageServiceImpl implements StorageService {
 
     private final StorageRepository storageRepository;
     private final UserService userService;
+    private final ApplicationEventPublisher publisher;
 
     // change later to real storage (S3 / disk)
     private final String BASE_STORAGE_PATH = "/storage/";
@@ -209,7 +215,10 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public void shareFolder(String ownerUuid, ShareRequest request) {
+        var user = userService.getUserByUuid(request.getSharedWithUserUuid());
         storageRepository.shareFolder(ownerUuid, request.getResourceUuid(), request.getSharedWithUserUuid(), request.getPermission());
+        publisher.publishEvent(new Event(STORAGE_SHARE, of( "email" , request.getSharedWithUserEmail() ,  "name" , capitalizeFully(user.getFirstName()))));
+
     }
 
     @Override
